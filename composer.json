@@ -1,0 +1,19 @@
+{
+    "name": "lijoabraham/kafka-php-docker",
+    "description": "kafka, PHP and docker integration",
+    "authors": [
+        {
+            "name": "lijoabraham",
+            "email": "lijoabraham1234@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "^4.0"
+    },
+    "autoload": {
+         "psr-4": {
+             "Console\\": "app"
+         },
+         "classmap": ["app"]
+    }
+}

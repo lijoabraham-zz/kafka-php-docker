@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+    php:
+        container_name: php
+        hostname: php
+        build: ./docker/php/
+        volumes:
+            - .:/app
+        links:
+            - kafka
+    
+    zookeeper:
+        container_name: zookeeper
+        hostname: zookeeper
+        image: bitnami/zookeeper:latest
+        expose:
+            - 2181
+        environment:
+            - ZOO_ENABLE_AUTH=yes
+            - ZOO_CLIENT_USER=kafka
+            - ZOO_CLIENT_PASSWORD=kafka_password
+        volumes:
+            - ~/.backup/zookeeper/kafka-php-:/bitnami/zookeeper
+    
+    kafka:
+        container_name: kafka
+        hostname: kafka
+        build: ./docker/kafka/
+        ports:
+            - 9092:9092
+        links:
+            - zookeeper
+        depends_on:
+            - zookeeper
+        environment:
+            - ALLOW_PLAINTEXT_LISTENER=true
+            - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+            - KAFKA_ZOOKEEPER_USER=kafka
+            - KAFKA_ZOOKEEPER_PASSWORD=kafka_password
+            # - KAFKA_CFG_LISTENERS=SASL_SSL://:9092
+            # - KAFKA_CFG_ADVERTISED_LISTENERS=SASL_SSL://:9092
+        volumes:
+            - ~/.backup/kafka/kafka-php:/bitnami/kafka
